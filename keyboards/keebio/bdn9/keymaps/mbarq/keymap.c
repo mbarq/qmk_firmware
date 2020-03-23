@@ -61,9 +61,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 void encoder_update_user(uint8_t index, bool clockwise) {
     if (index == 0) {
         if (clockwise) {
-            SEND_STRING(SS_TAP(X_END)"+.1" SS_TAP(X_ENTER));
+            SEND_STRING(SS_TAP(X_END)"+.1" SS_TAP(X_ENTER) SS_TAP(X_ENTER));
         } else {
-            tap_code(KC_VOLD);
+            SEND_STRING(SS_TAP(X_END)"-.1" SS_TAP(X_ENTER) SS_TAP(X_ENTER));
         }
     }
     else if (index == 1) {
