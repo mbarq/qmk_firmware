@@ -15,6 +15,25 @@
  */
 #include QMK_KEYBOARD_H
 
+enum custom_keycodes {
+    ADD_VAL = SAFE_RANGE
+};
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case ADD_VAL:
+            if (record->event.pressed) {
+                //when keycode ADD_VAL is pressed,
+                //goes home, adds value ".1" and enters it
+                SEND_STRING(SS_TAP(X_END)"+.1" SS_TAP(X_ENTER));
+            } else {
+                //when keycode ADD_VAL is released
+            }
+            break;
+        }
+        return true;
+    };
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /*
         | Knob 1: Vol Dn/Up |      | Knob 2: Page Dn/Up |
@@ -24,7 +43,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      */
     [0] = LAYOUT(
         KC_MUTE, KC_HOME, KC_MPLY,
-        MO(1)  , KC_UP  , RGB_MOD,
+        MO(1)  , KC_UP, RGB_MOD,
         KC_LEFT, KC_DOWN, KC_RGHT
     ),
     /*
@@ -42,7 +61,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 void encoder_update_user(uint8_t index, bool clockwise) {
     if (index == 0) {
         if (clockwise) {
-            tap_code(KC_VOLU);
+            SEND_STRING(SS_TAP(X_END)"+.1" SS_TAP(X_ENTER));
         } else {
             tap_code(KC_VOLD);
         }
