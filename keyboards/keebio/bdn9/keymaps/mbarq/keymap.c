@@ -16,7 +16,10 @@
 #include QMK_KEYBOARD_H
 
 enum custom_keycodes {
-    ADD_VAL = SAFE_RANGE
+    ADD_VAL = SAFE_RANGE,
+    END_MUL,
+    END_ADD,
+    END_SUB
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -30,6 +33,37 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 //when keycode ADD_VAL is released
             }
             break;
+
+            case END_MUL:
+            if (record->event.pressed) {
+                //when keycode ADD_VAL is pressed,
+                //goes home, adds value ".1" and enters it
+                SEND_STRING(SS_TAP(X_END)"*");
+            } else {
+                //when keycode ADD_VAL is released
+            }
+            break;
+
+            case END_ADD:
+            if (record->event.pressed) {
+                //when keycode ADD_VAL is pressed,
+                //goes home, adds value ".1" and enters it
+                SEND_STRING(SS_TAP(X_END)"+");
+            } else {
+                //when keycode ADD_VAL is released
+            }
+            break;
+
+            case END_SUB:
+            if (record->event.pressed) {
+                //when keycode ADD_VAL is pressed,
+                //goes home, adds value ".1" and enters it
+                SEND_STRING(SS_TAP(X_END)"-");
+            } else {
+                //when keycode ADD_VAL is released
+            }
+            break;
+
         }
         return true;
     };
@@ -42,9 +76,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         | Left              | Down | Right              |
      */
     [0] = LAYOUT(
-        KC_MUTE, KC_HOME, KC_MPLY,
-        MO(1)  , KC_UP, RGB_MOD,
-        KC_LEFT, KC_DOWN, KC_RGHT
+        KC_MUTE, KC_TAB, KC_MPLY,
+        MO(1)  , LCTL(KC_4), KC_LSFT,
+        END_MUL, END_ADD, END_SUB
     ),
     /*
         | RESET          | N/A  | Media Stop |
@@ -53,24 +87,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      */
     [1] = LAYOUT(
         RESET  , BL_STEP, KC_STOP,
-        _______, KC_HOME, RGB_MOD,
-        KC_MPRV, KC_END , KC_MNXT
+        _______, KC_UP, RGB_MOD,
+        KC_LEFT, KC_DOWN , KC_RGHT
     ),
 };
 
 void encoder_update_user(uint8_t index, bool clockwise) {
     if (index == 0) {
         if (clockwise) {
-            SEND_STRING(SS_TAP(X_END)"+.1" SS_TAP(X_ENTER) SS_TAP(X_ENTER));
+            tap_code(KC_VOLD);
         } else {
-            SEND_STRING(SS_TAP(X_END)"-.1" SS_TAP(X_ENTER) SS_TAP(X_ENTER));
+            tap_code(KC_VOLU);
         }
     }
     else if (index == 1) {
         if (clockwise) {
-            tap_code(KC_PGDN);
+            SEND_STRING(SS_TAP(X_END)"-.1" SS_TAP(X_ENTER) SS_TAP(X_ENTER));
         } else {
-            tap_code(KC_PGUP);
+            SEND_STRING(SS_TAP(X_END)"+.1" SS_TAP(X_ENTER) SS_TAP(X_ENTER));
         }
     }
 }
